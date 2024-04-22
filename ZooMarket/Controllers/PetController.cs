@@ -40,6 +40,47 @@ namespace ZooMarket.Controllers
 
             return pets;
         }
-        
+
+        [HttpPut("UpdatePet")]
+        public ActionResult<string> UpdatePet(CreatePetDto updatepet, int PetId)
+        {
+            var pet = _context.Pets.FirstOrDefault(x => x.Id == PetId);
+
+            pet.Name = updatepet.Name;
+            pet.Description = updatepet.Description;
+            pet.Price = updatepet.Price;
+            pet.TypePet = updatepet.TypePet;
+
+            _context.Pets.Update(pet);
+            _context.SaveChanges();
+
+            return "Животное обновлено";
+
+        }
+
+        [HttpDelete("PetRemove")]
+        public ActionResult<string> DeletePet(int PetId)
+        {
+            var pet = _context.Pets.FirstOrDefault(x => x.Id == PetId);
+
+            _context.Pets.Remove(pet);
+            _context.SaveChanges();
+
+            return "Животное удалено";
+        }
+
+        [HttpGet("GetPetById")]
+        public ActionResult<PetDto> GetPetById(int PetId)
+        {
+            var pet = _context.Pets.Where(x=>x.Id == PetId)
+                                    .Select(x=> new PetDto { Id = x.Id, Description = x.Description, Name = x.Name, Price = x.Price, TypePet = x.TypePet})
+                                    .FirstOrDefault();
+
+            
+
+            return pet;
+
+        }
+
     }
 }
